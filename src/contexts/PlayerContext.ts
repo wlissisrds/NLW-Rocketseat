@@ -12,7 +12,11 @@ type Episode = {
 type PlayerContextData = {
     episodeList: Array<Episode>;
     currentEpisodeIndex: number;
+    isPlaying: boolean;
     play: (episode: Episode) => void;
+    togglePlay: () => void;
+    setIsPlayingState: (state: boolean) => void;
+
 }
 
 //OUTRRA FORMA DE PASSAR TYPE, DIZENDO QUE TEM A MESMA ESTRUTURA

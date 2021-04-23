@@ -14,10 +14,21 @@ function MyApp({ Component, pageProps }) {
 
 const [episodeList, setEpisodeList] = useState([]);
 const [currentEpisodeIndex, setCurrentEpisodeIndex] = useState(0);
+const [isPlaying, setIsPlaying] = useState(false);
+
 
 function play(episode) {
   setEpisodeList([episode]);
   setCurrentEpisodeIndex(0);
+  setIsPlaying(true);
+}
+
+function togglePlay() {
+  setIsPlaying(!isPlaying);
+}
+
+function setIsPlayingState(state: boolean) {
+    setIsPlaying(state);
 }
 
   return (
@@ -25,7 +36,10 @@ function play(episode) {
       value={{
         episodeList: episodeList,
         currentEpisodeIndex: currentEpisodeIndex,
+        isPlaying: isPlaying,
         play, //passando a funcao por contexto
+        togglePlay,
+        setIsPlayingState
       }}>
 
       <div className={style.wrapper}>
