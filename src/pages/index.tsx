@@ -1,6 +1,9 @@
 import { GetStaticProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { useContext } from "react";
+
+import { PlayerContext } from "../contexts/PlayerContext";
 import { api } from "../services/api";
 import { convertDurationToTimeString } from "../utils/converDurationToTimeString";
 
@@ -26,6 +29,9 @@ type HomeProps = {
 }
 
 export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
+  const {play} = useContext(PlayerContext);
+
+
   return (
     <div className={style.homepage}>
       <section className={style.latestEpisodes}>

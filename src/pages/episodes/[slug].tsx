@@ -28,6 +28,8 @@ type EpisodeProps = {
 
 //[pode ser qulquer nome].tsx esse arquivo recebe como parametro oa rotas do navegador
 export default function Episode({ episode }: EpisodeProps) {
+
+
     return (
         <div className={style.episode}>
             <div className={style.thumbnailContainer}>
@@ -63,10 +65,29 @@ export default function Episode({ episode }: EpisodeProps) {
     )
 
 }
+
+//QUAIS EPISODIOS EU QUERO GERAR DE FORMA ESTÁTICA NO MOMENTO DA BUILD
 //Obrigatorio em paginas staticas-dinamicas SSG
 export const getStaticPaths: GetStaticPaths = async () => {
+
+    const {data} = await api.get("episodes", {
+        params:{
+            _limit: 2,
+            _sort: "published_at",
+            _order: "desc"
+        }
+    })
+
+    const paths = data.map(episode => {
+        return {
+            params: {
+                slug: episode.id
+            }
+        }
+    }) 
+
     return {
-        paths: [],
+        paths: paths,
         fallback: "blocking"
     }
 }
