@@ -29,7 +29,8 @@ export default function Player() {
         playNext,
         playPrevious,
         hasNext,
-        hasPrevious } = usePlayer();
+        hasPrevious,
+        clearPlayerState } = usePlayer();
 
     useEffect(() => {
         if (!audioRef.current) {
@@ -56,6 +57,15 @@ export default function Player() {
         audioRef.current.currentTime = amount;
         setProgress(amount);
     }
+
+    function handleEpisodeEnded() {
+        if(hasNext) {
+            playNext();
+        } else {
+            clearPlayerState();
+        }
+    }
+   
 
     const episode = episodeList[currentEpisodeIndex]
 
@@ -111,6 +121,7 @@ export default function Player() {
                         src={episode.url}
                         ref={audioRef}
                         loop={isLooping}
+                        onEnded={handleEpisodeEnded}
                         autoPlay
                         onPlay={() => setIsPlayingState(true)}
                         onPause={() => setIsPlayingState(false)}
