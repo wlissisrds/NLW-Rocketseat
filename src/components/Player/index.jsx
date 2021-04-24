@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Slider from "rc-slider";
 
 import { usePlayer } from "../../contexts/PlayerContext";
@@ -13,6 +13,7 @@ import { convertDurationToTimeString } from "../../utils/converDurationToTimeStr
 export default function Player() {
 
     const audioRef = useRef(null);
+    const [progress, setProgress] = useState(0);
 
     const {
         episodeList,
@@ -40,7 +41,15 @@ export default function Player() {
             audioRef.current.pause();
         }
 
-    }, [isPlaying])
+    }, [isPlaying]);
+
+    function setupProgressListener() {
+        audioRef.current.currentTime = 0;
+
+        audioRef.current.addEventListener('timeupdate', event => {
+            setProgress(Math.floor(audioRef.current.currentTime))
+        })
+    }
 
     const episode = episodeList[currentEpisodeIndex]
 
@@ -72,7 +81,7 @@ export default function Player() {
 
             <footer className={!episode ? style.empty : ''}>
                 <div className={style.progress}>
-                    <span>00:00</span>
+                    <span>{convertDurationToTimeString(progress)}</span>
 
                     <div className={style.slider}>
                         {episode ? (
@@ -96,6 +105,7 @@ export default function Player() {
                         autoPlay
                         onPlay={() => setIsPlayingState(true)}
                         onPause={() => setIsPlayingState(false)}
+                        onLoadedMetadata={ setupProgressListener}
                     />
                 )}
 
