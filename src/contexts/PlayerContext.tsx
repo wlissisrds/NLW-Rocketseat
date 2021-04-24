@@ -14,9 +14,11 @@ type PlayerContextData = {
     currentEpisodeIndex: number;
     isPlaying: boolean;
     isLooping: boolean;
+    inShuffling: boolean;
     play: (episode: Episode) => void;
     togglePlay: () => void;
     toggleLoop: () => void;
+    toggleShuffle: () => void;
     setIsPlayingState: (state: boolean) => void;
     playList: (list: Episode[], index: number) => void;
     playNext: () => void;
@@ -38,6 +40,8 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
     const [currentEpisodeIndex, setCurrentEpisodeIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLooping, setIsLooping] = useState(false);
+    const [isShuffling, setIsShuffling] = useState(false);
+
 
 
 
@@ -61,6 +65,11 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
         setIsLooping(!isLooping);
     }
 
+    function toggleShuffle() {
+        setIsShuffling(!isShuffling);
+    }
+
+
     function setIsPlayingState(state: boolean) {
         setIsPlaying(state);
     }
@@ -69,15 +78,16 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
     const hasNext = (currentEpisodeIndex + 1) < episodeList.length;
 
     function playNext() {
-        const nextEpisodeIndex = currentEpisodeIndex + 1;
-
-        if (hasNext) {
+        if (isShuffling) {
+            const nextRandomEpisodeIndex = Math.floor(Math.random() * episodeList.length);
+            setCurrentEpisodeIndex(nextRandomEpisodeIndex);
+        } else if (hasNext) {
             setCurrentEpisodeIndex(currentEpisodeIndex + 1);
         }
     }
 
     function playPrevious() {
-        if(hasPrevious) {
+        if (hasPrevious) {
             setCurrentEpisodeIndex(currentEpisodeIndex - 1);
         }
 
@@ -90,9 +100,11 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
                 currentEpisodeIndex: currentEpisodeIndex,
                 isPlaying: isPlaying,
                 isLooping: isLooping,
+                inShuffling: isShuffling,
                 play, //passando a funcao por contexto
                 togglePlay,
                 toggleLoop,
+                toggleShuffle,
                 setIsPlayingState,
                 playList,
                 playNext,

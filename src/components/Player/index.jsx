@@ -6,6 +6,7 @@ import Slider from "rc-slider";
 import { usePlayer } from "../../contexts/PlayerContext";
 import style from "./style.module.scss";
 import 'rc-slider/assets/index.css';
+import { convertDurationToTimeString } from "../../utils/converDurationToTimeString";
 
 
 
@@ -18,8 +19,10 @@ export default function Player() {
         currentEpisodeIndex,
         isPlaying,
         isLooping,
+        inShuffling,
         togglePlay,
         toggleLoop,
+        toggleShuffle,
         setIsPlayingState,
         playNext,
         playPrevious,
@@ -82,7 +85,7 @@ export default function Player() {
                         )}
                     </div>
 
-                    <span>00:00</span>
+                    <span>{convertDurationToTimeString(episode?.duration ?? 0)}</span>
                 </div>
 
                 {episode && (
@@ -97,7 +100,11 @@ export default function Player() {
                 )}
 
                 <div className={style.buttons}>
-                    <button type="button" disabled={!episode}>
+                    <button
+                        type="button"
+                        disabled={!episode || episodeList.length == 1}
+                        onClick={toggleShuffle}
+                        className={inShuffling ? style.isActive : ''}>
                         <img src="/shuffle.svg" alt="Embaralhar" />
                     </button>
 
@@ -125,7 +132,7 @@ export default function Player() {
                         type="button"
                         disabled={!episode}
                         onClick={toggleLoop}
-                        className={isLooping ? style.isActive: ''}>
+                        className={isLooping ? style.isActive : ''}>
                         <img src="/repeat.svg" alt="Repetir" />
                     </button>
                 </div>
