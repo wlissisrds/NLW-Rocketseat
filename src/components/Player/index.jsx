@@ -18,7 +18,9 @@ export default function Player() {
         currentEpisodeIndex,
         isPlaying,
         togglePlay,
-        setIsPlayingState} = useContext(PlayerContext);
+        setIsPlayingState,
+        playNext,
+        playPrevious } = useContext(PlayerContext);
 
     useEffect(() => {
         if (!audioRef.current) {
@@ -84,8 +86,8 @@ export default function Player() {
                         src={episode.url}
                         ref={audioRef}
                         autoPlay
-                        onPlay={()=> setIsPlayingState(true)}
-                        onPause={()=> setIsPlayingState(false)}
+                        onPlay={() => setIsPlayingState(true)}
+                        onPause={() => setIsPlayingState(false)}
                     />
                 )}
 
@@ -94,7 +96,7 @@ export default function Player() {
                         <img src="/shuffle.svg" alt="Embaralhar" />
                     </button>
 
-                    <button type="button" disabled={!episode}>
+                    <button type="button" onClick={playPrevious} disabled={!episode} >
                         <img src="/play-previous.svg" alt="Tocar anterior" />
                     </button>
 
@@ -110,7 +112,7 @@ export default function Player() {
 
                     </button>
 
-                    <button type="button" disabled={!episode}>
+                    <button type="button" onClick={playNext} disabled={!episode} >
                         <img src="/play-next.svg" alt="Tocar proximo" />
                     </button>
 
