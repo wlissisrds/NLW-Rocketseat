@@ -7,6 +7,7 @@ import { usePlayer } from "../../contexts/PlayerContext";
 import style from "./style.module.scss";
 import 'rc-slider/assets/index.css';
 import { convertDurationToTimeString } from "../../utils/converDurationToTimeString";
+import Episode from "../../pages/episodes/[slug]";
 
 
 
@@ -51,6 +52,11 @@ export default function Player() {
         })
     }
 
+    function handleSeek(amount) {
+        audioRef.current.currentTime = amount;
+        setProgress(amount);
+    }
+
     const episode = episodeList[currentEpisodeIndex]
 
     return (
@@ -86,6 +92,9 @@ export default function Player() {
                     <div className={style.slider}>
                         {episode ? (
                             <Slider
+                                max={episode.duration}
+                                value={progress}
+                                onChange={handleSeek}
                                 trackStyle={{ backgroundColor: "#04d361" }}
                                 railStyle={{ backgroundColor: "#9f75ff" }}
                                 handleStyle={{ borderColor: "#04d361", borderWidth: 4, }}></Slider>
@@ -105,7 +114,7 @@ export default function Player() {
                         autoPlay
                         onPlay={() => setIsPlayingState(true)}
                         onPause={() => setIsPlayingState(false)}
-                        onLoadedMetadata={ setupProgressListener}
+                        onLoadedMetadata={setupProgressListener}
                     />
                 )}
 
