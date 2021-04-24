@@ -1,9 +1,9 @@
 import Image from "next/image";
 
-import { useContext, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Slider from "rc-slider";
 
-import { PlayerContext } from "../../contexts/PlayerContext";
+import { usePlayer } from "../../contexts/PlayerContext";
 import style from "./style.module.scss";
 import 'rc-slider/assets/index.css';
 
@@ -17,10 +17,14 @@ export default function Player() {
         episodeList,
         currentEpisodeIndex,
         isPlaying,
+        isLooping,
         togglePlay,
+        toggleLoop,
         setIsPlayingState,
         playNext,
-        playPrevious } = useContext(PlayerContext);
+        playPrevious,
+        hasNext,
+        hasPrevious } = usePlayer();
 
     useEffect(() => {
         if (!audioRef.current) {
@@ -85,6 +89,7 @@ export default function Player() {
                     <audio
                         src={episode.url}
                         ref={audioRef}
+                        loop={isLooping}
                         autoPlay
                         onPlay={() => setIsPlayingState(true)}
                         onPause={() => setIsPlayingState(false)}
@@ -96,7 +101,7 @@ export default function Player() {
                         <img src="/shuffle.svg" alt="Embaralhar" />
                     </button>
 
-                    <button type="button" onClick={playPrevious} disabled={!episode} >
+                    <button type="button" onClick={playPrevious} disabled={!episode || !hasPrevious} >
                         <img src="/play-previous.svg" alt="Tocar anterior" />
                     </button>
 
@@ -112,11 +117,15 @@ export default function Player() {
 
                     </button>
 
-                    <button type="button" onClick={playNext} disabled={!episode} >
+                    <button type="button" onClick={playNext} disabled={!episode || !hasNext} >
                         <img src="/play-next.svg" alt="Tocar proximo" />
                     </button>
 
-                    <button type="button" disabled={!episode}>
+                    <button
+                        type="button"
+                        disabled={!episode}
+                        onClick={toggleLoop}
+                        className={isLooping ? style.isActive: ''}>
                         <img src="/repeat.svg" alt="Repetir" />
                     </button>
                 </div>

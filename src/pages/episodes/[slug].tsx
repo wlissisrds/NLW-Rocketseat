@@ -8,6 +8,7 @@ import { api } from '../../services/api';
 import { convertDurationToTimeString } from '../../utils/converDurationToTimeString';
 
 import style from "./episode.module.scss";
+import { usePlayer } from '../../contexts/PlayerContext';
 
 type Episode = {
     id: string,
@@ -28,7 +29,7 @@ type EpisodeProps = {
 
 //[pode ser qulquer nome].tsx esse arquivo recebe como parametro oa rotas do navegador
 export default function Episode({ episode }: EpisodeProps) {
-
+    const { play } = usePlayer()
 
     return (
         <div className={style.episode}>
@@ -44,7 +45,7 @@ export default function Episode({ episode }: EpisodeProps) {
                     src={episode.thumbnail}
                     objectFit="cover">
                 </Image>
-                <button type="button">
+                <button type="button" onClick={() => play(episode)}>
                     <img src="/play.svg" alt="Tocar episodio" />
                 </button>
             </div>
@@ -70,8 +71,8 @@ export default function Episode({ episode }: EpisodeProps) {
 //Obrigatorio em paginas staticas-dinamicas SSG
 export const getStaticPaths: GetStaticPaths = async () => {
 
-    const {data} = await api.get("episodes", {
-        params:{
+    const { data } = await api.get("episodes", {
+        params: {
             _limit: 2,
             _sort: "published_at",
             _order: "desc"
@@ -84,7 +85,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
                 slug: episode.id
             }
         }
-    }) 
+    })
 
     return {
         paths: paths,
